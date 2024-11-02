@@ -6,64 +6,78 @@ from merge_sort import merge_sort
 from quick_sort import quick_sort
 
 
-# Generate datasets
+def performance_test(sort_func, arr):
+    tracemalloc.start()
+    start_time = time.time()
+    sort_func(arr)
+    end_time = time.time()
+    _, peak = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+    return end_time - start_time, peak
+
+
 def generate_datasets(size):
     sorted_data = list(range(size))
     reverse_sorted_data = sorted_data[::-1]
-    random_data = random.sample(range(size * 2), size)  # unique random values
+    random_data = random.sample(range(size * 2), size)
     return sorted_data, reverse_sorted_data, random_data
 
 
-# Run and time sorting algorithms
-def measure_time_memory(sort_func, data):
-    tracemalloc.start()  # Start memory tracking
-    start_time = time.time()
-    sort_func(data)
-    duration = time.time() - start_time
-    current, peak = tracemalloc.get_traced_memory()  # Get memory usage
-    tracemalloc.stop()  # Stop memory tracking
-    return duration, peak
+def quick_sort_wrapper(arr):
+    quick_sort(arr, 0, len(arr) - 1)
 
 
-# Test and compare
 def compare_sorts(size):
     sorted_data, reverse_sorted_data, random_data = generate_datasets(size)
 
-    print(f"Data size: {size}")
+    # Run performance tests
+    print(f"Testing Quick Sort on dataset of {size} numbers")
+    quick_sorted_time, quick_sorted_memory = performance_test(
+        quick_sort_wrapper, sorted_data.copy()
+    )
+    quick_reverse_sorted_time, quick_reverse_sorted_memory = performance_test(
+        quick_sort_wrapper, reverse_sorted_data.copy()
+    )
+    quick_random_time, quick_random_memory = performance_test(
+        quick_sort_wrapper, random_data.copy()
+    )
 
-    # Quick Sort timings and memory
-    print("Quick Sort Times and Memory Usage:")
-    for name, data in [
-        ("Sorted", sorted_data),
-        ("Reverse Sorted", reverse_sorted_data),
-        ("Random", random_data),
-    ]:
-        time_taken, memory_used = measure_time_memory(quick_sort, data.copy())
-        print(
-            f"  {name}: Time = {time_taken:.6f} sec, Peak Memory = {memory_used / 1024:.2f} KB"
-        )
+    merge_sorted_time, merge_sorted_memory = performance_test(
+        merge_sort, sorted_data.copy()
+    )
+    merge_reverse_sorted_time, merge_reverse_sorted_memory = performance_test(
+        merge_sort, reverse_sorted_data.copy()
+    )
+    merge_random_time, merge_random_memory = performance_test(
+        merge_sort, random_data.copy()
+    )
 
-    # Merge Sort timings and memory
-    print("\nMerge Sort Times and Memory Usage:")
-    for name, data in [
-        ("Sorted", sorted_data),
-        ("Reverse Sorted", reverse_sorted_data),
-        ("Random", random_data),
-    ]:
-        time_taken, memory_used = measure_time_memory(merge_sort, data.copy())
-        print(
-            f"  {name}: Time = {time_taken:.6f} sec, Peak Memory = {memory_used / 1024:.2f} KB"
-        )
+    # Display results
+    print(
+        f"Quick Sort - Sorted Data: {quick_sorted_time:.6f} sec, {quick_sorted_memory} bytes"
+    )
+    print(
+        f"Quick Sort - Reverse Sorted Data: {quick_reverse_sorted_time:.6f} sec, {quick_reverse_sorted_memory} bytes"
+    )
+    print(
+        f"Quick Sort - Random Data: {quick_random_time:.6f} sec, {quick_random_memory} bytes\n"
+    )
+
+    print(f"Testing Merge Sort on dataset of {size} numbers")
+
+    print(
+        f"Merge Sort - Sorted Data: {merge_sorted_time:.6f} sec, {merge_sorted_memory} bytes"
+    )
+    print(
+        f"Merge Sort - Reverse Sorted Data: {merge_reverse_sorted_time:.6f} sec, {merge_reverse_sorted_memory} bytes"
+    )
+    print(
+        f"Merge Sort - Random Data: {merge_random_time:.6f} sec, {merge_random_memory} bytes"
+    )
+    print()
 
 
-# Example comparions for size 5000
-compare_sorts(5000)
-
-# Example comparions for size 30000
-compare_sorts(30000)
-
-# Example comparison for size 100000
-compare_sorts(100000)
-
-# Example comparison for size 200000
-compare_sorts(200000)
+compare_sorts(10)
+compare_sorts(100)
+compare_sorts(1000)
+compare_sorts(2000)
