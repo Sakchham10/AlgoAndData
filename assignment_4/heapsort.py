@@ -19,7 +19,7 @@ def heapify(arr, n, i):
         heapify(arr, n, largest)
 
 
-def heapsort(arr):
+def heap_sort(arr):
     n = len(arr)
 
     # Build a max-heap

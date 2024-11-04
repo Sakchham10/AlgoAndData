@@ -1,7 +1,18 @@
+import os
 import random
+import sys
 import time
 import tracemalloc
 
+sys.path.append(
+    os.path.abspath("/Users/sakchhamsangroula/Projects/AlgoAndData/assignment_4")
+)
+
+sys.path.append(
+    os.path.abspath("/Users/sakchhamsangroula/Projects/AlgoAndData/assignment_2")
+)
+
+from heapsort import heap_sort
 from merge_sort import merge_sort
 from quick_sort import quick_sort
 
@@ -52,6 +63,16 @@ def compare_sorts(size):
         merge_sort, random_data.copy()
     )
 
+    heap_sorted_time, heap_sorted_memory = performance_test(
+        heap_sort, sorted_data.copy()
+    )
+    heap_reverse_sorted_time, heap_reverse_sorted_memory = performance_test(
+        heap_sort, reverse_sorted_data.copy()
+    )
+    heap_random_time, heap_random_memory = performance_test(
+        heap_sort, random_data.copy()
+    )
+
     # Display results
     print(
         f"Quick Sort - Sorted Data: {quick_sorted_time:.6f} sec, {quick_sorted_memory} bytes"
@@ -73,6 +94,20 @@ def compare_sorts(size):
     )
     print(
         f"Merge Sort - Random Data: {merge_random_time:.6f} sec, {merge_random_memory} bytes"
+    )
+
+    print()
+
+    print(f"Testing Heap Sort on dataset of {size} numbers")
+
+    print(
+        f"Heap Sort - Sorted Data: {heap_sorted_time:.6f} sec, {heap_sorted_memory} bytes"
+    )
+    print(
+        f"Heap Sort - Reverse Sorted Data: {heap_reverse_sorted_time:.6f} sec, {heap_reverse_sorted_memory} bytes"
+    )
+    print(
+        f"Heap Sort - Random Data: {heap_random_time:.6f} sec, {heap_random_memory} bytes"
     )
     print()
 
