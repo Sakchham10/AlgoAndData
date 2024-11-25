@@ -5,6 +5,13 @@ class Graph:
     def __init__(self):
         self.nodes = {}
 
+    def find_node(self, to, from_node):
+        if from_node not in self.nodes or to not in self.nodes:
+            return None
+        if from_node not in to.connections:
+            return 0
+        return to.connections[from_node]
+
     def add_node(self, value):
         if value not in self.nodes:
             self.nodes[value] = Node(value)
